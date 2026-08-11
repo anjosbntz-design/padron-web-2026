@@ -3,337 +3,665 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INTERNAS MUNICIPALES 2026 — Padrón de Consultas</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
+    <title>Consulta de Padrón Electoral - TSJE</title>
+    <!-- FontAwesome para Íconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
-            --red-colorado: #D21034;
-            --red-dark: #A60C28;
-            --bg-gray: #F4F6F9;
+            --primary-color: #c8102e; /* Rojo Paraguay */
+            --white-color: #ffffff;
+            --blue-color: #0038a8; /* Azul Paraguay */
+            --bg-dark: #0f111a;
+            --card-glass: rgba(255, 255, 255, 0.88);
+            --text-dark: #1e2029;
+            --text-muted: #5a6072;
+            --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+            --inset-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
         }
 
         body {
-            background-color: var(--bg-gray);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            color: #212529;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Top Bar */
-        .top-stripe {
-            height: 6px;
-            background-color: var(--red-colorado);
+        /* --- FONDO ANIMADO LUZ TRICOLOR 3D --- */
+        .ambient-light {
+            position: fixed;
+            top: -20%;
+            left: -50%;
+            width: 200%;
+            height: 140%;
+            z-index: 0;
+            pointer-events: none;
+            background: linear-gradient(
+                115deg, 
+                rgba(200, 16, 46, 0.35) 0%, 
+                rgba(255, 255, 255, 0.25) 35%, 
+                rgba(0, 56, 168, 0.35) 70%,
+                rgba(200, 16, 46, 0.35) 100%
+            );
+            filter: blur(80px);
+            animation: moveLight 12s ease-in-out infinite alternate;
         }
 
-        .navbar-header {
-            background-color: var(--red-colorado);
-            color: #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        @keyframes moveLight {
+            0% {
+                transform: translateX(-25%) translateY(-10%) rotate(-5deg);
+            }
+            100% {
+                transform: translateX(15%) translateY(10%) rotate(5deg);
+            }
         }
 
-        .card-custom {
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            background-color: #ffffff;
+        /* --- HEADER INSTITUCIONAL CON LOGOS --- */
+        header {
+            position: relative;
+            z-index: 1;
+            background: rgba(15, 17, 26, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
-        .header-section {
-            border-bottom: 2px solid #e9ecef;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+        .header-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .btn-red {
-            background-color: var(--red-colorado);
-            color: #ffffff;
+        .header-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+            transition: transform 0.3s ease;
+        }
+
+        .header-logo:hover {
+            transform: scale(1.05) translateZ(10px);
+        }
+
+        .header-title {
+            text-align: right;
+            color: white;
+        }
+
+        .header-title h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #ffffff, #dcdcdc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .header-title p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        main {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            max-width: 920px;
+            width: 100%;
+            margin: 2.5rem auto;
+            padding: 0 1.2rem;
+        }
+
+        /* --- TARJETA DE BÚSQUEDA 3D --- */
+        .card-3d {
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 2.2rem;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transform: perspective(1000px) rotateX(1deg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .card-3d:hover {
+            transform: perspective(1000px) rotateX(0deg) translateY(-4px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .search-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .search-title i {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .input-3d {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1.15rem;
             font-weight: 600;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--inset-shadow);
+            outline: none;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+
+        .input-3d:focus {
+            border-color: var(--blue-color);
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 56, 168, 0.2);
+        }
+
+        .btn-3d {
+            background: linear-gradient(135deg, var(--primary-color), #900c22);
+            color: white;
             border: none;
-            padding: 0.6rem 1.5rem;
-            transition: all 0.2s ease;
+            padding: 1rem 2rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(200, 16, 46, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-red:hover {
-            background-color: var(--red-dark);
-            color: #ffffff;
+        .btn-3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(200, 16, 46, 0.6);
+            background: linear-gradient(135deg, #da1435, var(--primary-color));
         }
 
-        .card-header-red {
-            background-color: var(--red-colorado);
-            color: #ffffff;
-            font-size: 0.95rem;
+        .btn-3d:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 10px rgba(200, 16, 46, 0.4);
+        }
+
+        /* --- LOADER AMBIENTAL --- */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2.5rem;
+            color: white;
+        }
+
+        .spinner-3d {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top: 5px solid var(--primary-color);
+            border-right: 5px solid #ffffff;
+            border-bottom: 5px solid var(--blue-color);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- ALERTAS --- */
+        .alert {
+            display: none;
+            padding: 1.2rem;
+            border-radius: 14px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-3d);
+        }
+
+        .alert-error {
+            background: rgba(255, 235, 238, 0.92);
+            color: #b71c1c;
+            border: 1px solid #ffcdd2;
+            border-left: 6px solid #d32f2f;
+        }
+
+        /* --- RESULTADOS 3D --- */
+        .results-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .result-card-3d {
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            animation: fadeIn3D 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn3D {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .card-header-3d {
+            padding: 1.2rem 1.8rem;
+            font-weight: 800;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        .card-header-3d.success {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15), rgba(76, 175, 80, 0.05));
+            color: #1b5e20;
+            border-bottom: 2px solid #2e7d32;
+        }
+
+        .card-header-3d.warning {
+            background: linear-gradient(135deg, rgba(245, 127, 23, 0.15), rgba(255, 179, 0, 0.05));
+            color: #e65100;
+            border-bottom: 2px solid #f57f17;
+        }
+
+        .card-body-3d {
+            padding: 2rem;
+        }
+
+        .data-grid-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .data-box {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 0.9rem 1.1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .data-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
             font-weight: 700;
             letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px 8px 0 0 !important;
+            margin-bottom: 0.3rem;
+            display: block;
         }
 
-        .card-header-dark {
-            background-color: #343a40;
-            color: #ffffff;
-            font-size: 0.95rem;
+        .data-value {
+            font-size: 1.05rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px 8px 0 0 !important;
+            color: var(--text-dark);
         }
 
-        /* Tabla de Ficha Técnica */
-        .table-ficha {
-            margin-bottom: 0;
+        /* Cajas Destacadas de Mesa y Orden */
+        .highlight-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.8rem;
         }
 
-        .table-ficha td {
-            padding: 0.75rem 1rem;
-            vertical-align: middle;
-            font-size: 0.92rem;
-            border-color: #e9ecef;
+        .highlight-card {
+            background: linear-gradient(145deg, #ffffff, #f0f4f9);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 56, 168, 0.08), var(--inset-shadow);
+            border: 1px solid rgba(0, 56, 168, 0.15);
         }
 
-        .label-cell {
-            background-color: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            width: 22%;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.3px;
-        }
-
-        .value-cell {
-            color: #111;
-            font-weight: 500;
-        }
-
-        .badge-status {
-            font-size: 0.8rem;
-            padding: 0.4em 0.8em;
-            border-radius: 4px;
-        }
-
-        footer {
-            margin-top: auto;
-            background-color: #1a1a1a;
-            color: #a0aec0;
+        .highlight-card .data-label {
+            color: var(--blue-color);
             font-size: 0.85rem;
-            border-top: 3px solid var(--red-colorado);
+        }
+
+        .highlight-card .data-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* TABLA HISTÓRICA 3D */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: var(--inset-shadow);
+        }
+
+        .table-3d {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .table-3d th, .table-3d td {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .table-3d th {
+            background: rgba(15, 17, 26, 0.05);
+            color: var(--text-dark);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- FOOTER CON CREDENCIALES Y MARCA --- */
+        footer {
+            position: relative;
+            z-index: 1;
+            background: rgba(15, 17, 26, 0.85);
+            backdrop-filter: blur(12px);
+            color: #a0a5b5;
+            text-align: center;
+            padding: 2rem 1rem;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        footer strong {
+            color: #ffffff;
+        }
+
+        .footer-credits {
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 650px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            .header-title {
+                text-align: center;
+            }
+            .search-form {
+                flex-direction: column;
+            }
+            .btn-3d {
+                justify-content: center;
+            }
+            .highlight-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-stripe"></div>
+    <!-- EFECTO LUZ TRICOLOR ANIMADO EN EL FONDO -->
+    <div class="ambient-light"></div>
 
-    <!-- Encabezado Principal -->
-    <header class="navbar-header py-3">
-        <div class="container text-center">
-            <h3 class="mb-0 fw-bold text-uppercase" style="letter-spacing: 1px;">INTERNAS MUNICIPALES 2026</h3>
-            <small class="text-white-50 text-uppercase fw-semibold" style="letter-spacing: 0.8px;">PADRÓN DE CONSULTAS</small>
+    <!-- HEADER INSTITUCIONAL -->
+    <header>
+        <div class="header-logo-container">
+            <!-- Carga de Logos desde la carpeta static -->
+            <img src="{{ url_for('static', filename='logo_tsje.png') }}" alt="TSJE Logo" class="header-logo" onerror="this.style.display='none'">
+            <img src="{{ url_for('static', filename='logo_dgre.png') }}" alt="DGRE Logo" class="header-logo" onerror="this.style.display='none'">
+        </div>
+        <div class="header-title">
+            <h1>Padrón Electoral Nacional</h1>
+            <p>Dirección de Registros Electorales - TSJE</p>
         </div>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="container my-5" style="max-width: 950px;">
-        
-        <!-- Formulario de Búsqueda -->
-        <div class="card card-custom p-4 mb-4">
-            <div class="header-section text-center">
-                <h5 class="fw-bold text-dark mb-1">CONSULTA CIUDADANA</h5>
-                <p class="text-muted small mb-0">Ingrese el número de Cédula de Identidad para consultar la mesa y local de votación</p>
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main>
+        <!-- Tarjeta de Búsqueda 3D -->
+        <section class="card-3d">
+            <div class="search-title">
+                <i class="fa-solid fa-id-card"></i>
+                <span>Consulta de Inscripción Cívica</span>
             </div>
-
-            <form id="formBusqueda" class="row g-3 justify-content-center align-items-center">
-                <div class="col-12 col-md-auto">
-                    <label for="cedula" class="form-label fw-bold mb-0 text-secondary">
-                        N° de Cédula:
-                    </label>
+            <form class="search-form" id="searchForm" onsubmit="realizarConsulta(event)">
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="cedulaInput" class="input-3d" placeholder="1234567" required autocomplete="off">
                 </div>
-                <div class="col-12 col-md-5">
-                    <input type="text" id="cedula" class="form-control form-control-lg fw-bold text-center border-2" placeholder="Ej: 1234567" required autofocus autocomplete="off">
-                </div>
-                <div class="col-12 col-md-auto">
-                    <button type="submit" class="btn btn-red btn-lg w-100">
-                        <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
-                    </button>
-                </div>
+                <button type="submit" class="btn-3d">
+                    <i class="fa-solid fa-search"></i> Consultar
+                </button>
             </form>
+        </section>
+
+        <!-- Loader Ambiental -->
+        <div id="loader" class="loader">
+            <div class="spinner-3d"></div>
+            <p style="font-weight: 600; letter-spacing: 0.5px;">Consultando Registro Cívico Permanente...</p>
         </div>
 
-        <!-- Indicator de Carga -->
-        <div id="cargando" class="text-center d-none my-5">
-            <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status"></div>
-            <p class="mt-3 text-muted fw-semibold">Consultando padrón...</p>
-        </div>
+        <!-- Alerta Error -->
+        <div id="alertError" class="alert alert-error"></div>
 
         <!-- Resultados -->
-        <div id="resultados" class="d-none">
-            
-            <!-- Inscripción Habilitada -->
-            <div class="card card-custom mb-4 overflow-hidden">
-                <div class="card-header-red d-flex justify-content-between align-items-center">
-                    <span>INSCRIPCIÓN HABILITADA EN RCP</span>
-                    <span id="badgeHabilitado" class="badge bg-success badge-status">HABILITADO</span>
-                </div>
-                <div class="card-body p-0" id="bloqueHabilitado"></div>
-            </div>
-
-            <!-- Registro Histórico -->
-            <div class="card card-custom overflow-hidden mb-4">
-                <div class="card-header-dark d-flex justify-content-between align-items-center">
-                    <span>INSCRIPCIONES NO HABILITADAS - HISTÓRICO</span>
-                </div>
-                <div class="card-body p-0" id="bloqueHistorico"></div>
-            </div>
-
-        </div>
-
+        <div id="resultsContainer" class="results-wrapper"></div>
     </main>
 
-    <!-- Pie de Página -->
-    <footer class="py-4 text-center">
-        <div class="container">
-            <p class="mb-1 text-white-50">Internas Municipales 2026 — Sistema de Consulta</p>
-            <p class="mb-0 text-white-50" style="font-size: 0.8rem;">
-                Desarrollado por <strong>AJBO</strong>
-            </p>
-        </div>
+    <!-- FOOTER INSTITUCIONAL -->
+    <footer>
+        <p>&copy; 2026 - Tribunal Superior de Justicia Electoral | <strong>República del Paraguay</strong></p>
+        <p class="footer-credits">Desarrollado para la Dirección de Registros Electorales (DGRE)</p>
     </footer>
 
-    <!-- Lógica JS -->
     <script>
-    document.getElementById('formBusqueda').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const cedula = document.getElementById('cedula').value.trim();
-        if (!cedula) return;
-
-        document.getElementById('cargando').classList.remove('d-none');
-        document.getElementById('resultados').classList.add('d-none');
-
-        try {
-            const res = await fetch(`/api/consultar?cedula=${cedula}`);
-            const data = await res.json();
+        async function realizarConsulta(event) {
+            event.preventDefault();
             
-            document.getElementById('cargando').classList.add('d-none');
-            document.getElementById('resultados').classList.remove('d-none');
+            const cedula = document.getElementById('cedulaInput').value.trim();
+            const loader = document.getElementById('loader');
+            const alertError = document.getElementById('alertError');
+            const resultsContainer = document.getElementById('resultsContainer');
 
-            const hb = document.getElementById('bloqueHabilitado');
-            const badgeHb = document.getElementById('badgeHabilitado');
+            // Limpieza de estado
+            alertError.style.display = 'none';
+            resultsContainer.innerHTML = '';
+            
+            if (!cedula) return;
 
-            if (data.habilitado) {
-                const h = data.habilitado;
-                badgeHb.className = "badge bg-success badge-status";
-                badgeHb.innerText = "HABILITADO";
+            loader.style.display = 'block';
 
-                hb.innerHTML = `
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-ficha mb-0">
-                            <tbody>
-                                <tr>
-                                    <td class="label-cell">Nombre y Apellido</td>
-                                    <td class="value-cell fw-bold text-uppercase" style="font-size: 1.05rem;">${h.nombre_completo}</td>
-                                    <td class="label-cell">Nacionalidad</td>
-                                    <td class="value-cell">${h.nacionalidad || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="label-cell">Departamento</td>
-                                    <td class="value-cell">${h.departamento || '-'}</td>
-                                    <td class="label-cell">Fec. Nacimiento</td>
-                                    <td class="value-cell">${h.fec_nac || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="label-cell">Distrito</td>
-                                    <td class="value-cell">${h.distrito || '-'}</td>
-                                    <td class="label-cell">Sexo</td>
-                                    <td class="value-cell">${h.sexo || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="label-cell">Zona</td>
-                                    <td class="value-cell" colspan="3">${h.zona || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="label-cell">Local</td>
-                                    <td class="value-cell" colspan="3">${h.local || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="label-cell">Mesa / Orden</td>
-                                    <td class="value-cell fw-bold" colspan="3">MESA: ${h.mesa || '-'} &nbsp;&nbsp;|&nbsp;&nbsp; ORDEN: ${h.orden || '-'}</td>
-                                </tr>
-                                <tr>
-                                    <td class="label-cell">Tipo Voto</td>
-                                    <td class="value-cell">${h.tipo_voto || '-'}</td>
-                                    <td class="label-cell">Pueblo / Comunidad Indígena</td>
-                                    <td class="value-cell">${h.pueblo_indigena || '0'} / ${h.comunidad_indigena || '0'}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            } else {
-                badgeHb.className = "badge bg-secondary badge-status";
-                badgeHb.innerText = "NO HABILITADO";
-                hb.innerHTML = `
-                    <div class="p-4 text-center text-muted fw-semibold">
-                        No se encontró una inscripción habilitada en el RCP para el número de cédula ingresado.
-                    </div>
-                `;
-            }
+            try {
+                const response = await fetch(`/api/consultar?cedula=${encodeURIComponent(cedula)}`);
+                const data = await response.json();
 
-            const hist = document.getElementById('bloqueHistorico');
-            if (data.historico && data.historico.length > 0) {
-                let html = `
-                    <div class="table-responsive">
-                    <table class="table table-bordered table-hover mb-0" style="font-size: 0.88rem;">
-                        <thead class="table-light">
-                            <tr class="text-uppercase small fw-bold">
-                                <th>Cédula</th>
-                                <th>Nombre y Apellido</th>
-                                <th>Motivo</th>
-                                <th>Detalle</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-                
-                data.historico.forEach(item => {
-                    html += `
-                        <tr class="table-warning fw-semibold">
-                            <td>${item.cedula}</td>
-                            <td class="text-uppercase">${item.nombre_completo}</td>
-                            <td class="text-danger fw-bold">${item.motivo}</td>
-                            <td>${item.detalle || '-'}</td>
-                        </tr>
-                        <tr class="bg-light">
-                            <td colspan="4" class="text-muted py-2">
-                                <strong>Departamento:</strong> ${item.departamento} | <strong>Distrito:</strong> ${item.distrito} | <strong>Zona:</strong> ${item.zona} | <strong>Local:</strong> ${item.local}<br>
-                                <strong>Fecha Inscr.:</strong> ${item.fecha_inscr} | <strong>Tipo:</strong> ${item.tipo_inscr} | <strong>Talonario:</strong> ${item.talonario} | <strong>Boleta N°:</strong> ${item.boleta}
-                            </td>
-                        </tr>
+                loader.style.display = 'none';
+
+                if (!response.ok) {
+                    alertError.textContent = data.error || 'Error al procesar la solicitud.';
+                    alertError.style.display = 'block';
+                    return;
+                }
+
+                if (!data.habilitado && (!data.historico || data.historico.length === 0)) {
+                    alertError.textContent = 'No se encontraron registros coincidentes con el número de cédula ingresado.';
+                    alertError.style.display = 'block';
+                    return;
+                }
+
+                // Render Habilitado RCP
+                if (data.habilitado) {
+                    const h = data.habilitado;
+                    const htmlHabilitado = `
+                        <div class="result-card-3d">
+                            <div class="card-header-3d success">
+                                <i class="fa-solid fa-circle-check"></i> HABILITADO / A EN EL REGISTRO CÍVICO PERMANENTE
+                            </div>
+                            <div class="card-body-3d">
+                                <div class="data-grid-3d">
+                                    <div class="data-box">
+                                        <span class="data-label">Cédula de Identidad</span>
+                                        <span class="data-value">${h.cedula}</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Nombre Completo</span>
+                                        <span class="data-value">${h.nombre_completo}</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Nacionalidad / Sexo</span>
+                                        <span class="data-value">${h.nacionalidad} (${h.sexo})</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Fecha Nacimiento</span>
+                                        <span class="data-value">${h.fec_nac || 'N/A'}</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Departamento</span>
+                                        <span class="data-value">${h.departamento}</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Distrito</span>
+                                        <span class="data-value">${h.distrito}</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Zona / Local</span>
+                                        <span class="data-value">${h.local}</span>
+                                    </div>
+                                    <div class="data-box">
+                                        <span class="data-label">Tipo Voto</span>
+                                        <span class="data-value">${h.tipo_voto}</span>
+                                    </div>
+                                </div>
+
+                                <div class="highlight-container">
+                                    <div class="highlight-card">
+                                        <span class="data-label">MESA DE VOTACIÓN</span>
+                                        <div class="data-value">${h.mesa}</div>
+                                    </div>
+                                    <div class="highlight-card">
+                                        <span class="data-label">Nº DE ORDEN</span>
+                                        <div class="data-value">${h.orden}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     `;
-                });
+                    resultsContainer.innerHTML += htmlHabilitado;
+                }
 
-                html += `</tbody></table></div>`;
-                hist.innerHTML = html;
-            } else {
-                hist.innerHTML = `
-                    <div class="p-3 text-center text-muted fw-semibold small">
-                        Sin antecedentes ni registros históricos archivados para esta C.I.
-                    </div>
-                `;
+                // Render Histórico / Inhabilitados
+                if (data.historico && data.historico.length > 0) {
+                    let filasTabla = data.historico.map(i => `
+                        <tr>
+                            <td><strong>${i.motivo}</strong><br><small style="color:var(--text-muted);">${i.detalle}</small></td>
+                            <td>${i.fecha_inscr}</td>
+                            <td>${i.distrito}</td>
+                            <td>${i.local}</td>
+                            <td>${i.tipo_inscr}</td>
+                            <td>Tal: ${i.talonario} / Bol: ${i.boleta}</td>
+                        </tr>
+                    `).join('');
+
+                    const htmlHistorico = `
+                        <div class="result-card-3d">
+                            <div class="card-header-3d warning">
+                                <i class="fa-solid fa-clock-rotate-left"></i> REGISTRO HISTÓRICO DE INSCRIPCIONES NO HABILITADAS
+                            </div>
+                            <div class="card-body-3d">
+                                <div class="table-container">
+                                    <table class="table-3d">
+                                        <thead>
+                                            <tr>
+                                                <th>Motivo / Detalle</th>
+                                                <th>Fecha Inscr.</th>
+                                                <th>Distrito</th>
+                                                <th>Local</th>
+                                                <th>Tipo</th>
+                                                <th>Comprobante</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${filasTabla}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    resultsContainer.innerHTML += htmlHistorico;
+                }
+
+            } catch (err) {
+                loader.style.display = 'none';
+                alertError.textContent = 'Error al intentar conectar con el servidor.';
+                alertError.style.display = 'block';
             }
-
-        } catch (err) {
-            document.getElementById('cargando').classList.add('d-none');
-            alert("Ocurrió un error al realizar la consulta.");
         }
-    });
     </script>
-
 </body>
 </html>
