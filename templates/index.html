@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTERNAS MUNICIPALES 2026 — Padrón de Consultas</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --red-colorado: #D21034;
+            --red-dark: #A60C28;
+            --bg-gray: #F4F6F9;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #212529;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Bar */
+        .top-stripe {
+            height: 6px;
+            background-color: var(--red-colorado);
+        }
+
+        .navbar-header {
+            background-color: var(--red-colorado);
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            background-color: #ffffff;
+        }
+
+        .header-section {
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-red {
+            background-color: var(--red-colorado);
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-red:hover {
+            background-color: var(--red-dark);
+            color: #ffffff;
+        }
+
+        .card-header-red {
+            background-color: var(--red-colorado);
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px 8px 0 0 !important;
+        }
+
+        .card-header-dark {
+            background-color: #343a40;
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px 8px 0 0 !important;
+        }
+
+        /* Tabla de Ficha Técnica */
+        .table-ficha {
+            margin-bottom: 0;
+        }
+
+        .table-ficha td {
+            padding: 0.75rem 1rem;
+            vertical-align: middle;
+            font-size: 0.92rem;
+            border-color: #e9ecef;
+        }
+
+        .label-cell {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            width: 22%;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+        }
+
+        .value-cell {
+            color: #111;
+            font-weight: 500;
+        }
+
+        .badge-status {
+            font-size: 0.8rem;
+            padding: 0.4em 0.8em;
+            border-radius: 4px;
+        }
+
+        footer {
+            margin-top: auto;
+            background-color: #1a1a1a;
+            color: #a0aec0;
+            font-size: 0.85rem;
+            border-top: 3px solid var(--red-colorado);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-stripe"></div>
+
+    <!-- Encabezado Principal -->
+    <header class="navbar-header py-3">
+        <div class="container text-center">
+            <h3 class="mb-0 fw-bold text-uppercase" style="letter-spacing: 1px;">INTERNAS MUNICIPALES 2026</h3>
+            <small class="text-white-50 text-uppercase fw-semibold" style="letter-spacing: 0.8px;">PADRÓN DE CONSULTAS</small>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container my-5" style="max-width: 950px;">
+        
+        <!-- Formulario de Búsqueda -->
+        <div class="card card-custom p-4 mb-4">
+            <div class="header-section text-center">
+                <h5 class="fw-bold text-dark mb-1">CONSULTA CIUDADANA</h5>
+                <p class="text-muted small mb-0">Ingrese el número de Cédula de Identidad para consultar la mesa y local de votación</p>
+            </div>
+
+            <form id="formBusqueda" class="row g-3 justify-content-center align-items-center">
+                <div class="col-12 col-md-auto">
+                    <label for="cedula" class="form-label fw-bold mb-0 text-secondary">
+                        N° de Cédula:
+                    </label>
+                </div>
+                <div class="col-12 col-md-5">
+                    <input type="text" id="cedula" class="form-control form-control-lg fw-bold text-center border-2" placeholder="Ej: 2119100" required autofocus autocomplete="off">
+                </div>
+                <div class="col-12 col-md-auto">
+                    <button type="submit" class="btn btn-red btn-lg w-100">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Indicator de Carga -->
+        <div id="cargando" class="text-center d-none my-5">
+            <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status"></div>
+            <p class="mt-3 text-muted fw-semibold">Consultando padrón...</p>
+        </div>
+
+        <!-- Resultados -->
+        <div id="resultados" class="d-none">
+            
+            <!-- Inscripción Habilitada -->
+            <div class="card card-custom mb-4 overflow-hidden">
+                <div class="card-header-red d-flex justify-content-between align-items-center">
+                    <span>INSCRIPCIÓN HABILITADA EN RCP</span>
+                    <span id="badgeHabilitado" class="badge bg-success badge-status">HABILITADO</span>
+                </div>
+                <div class="card-body p-0" id="bloqueHabilitado"></div>
+            </div>
+
+            <!-- Registro Histórico -->
+            <div class="card card-custom overflow-hidden mb-4">
+                <div class="card-header-dark d-flex justify-content-between align-items-center">
+                    <span>INSCRIPCIONES NO HABILITADAS - HISTÓRICO</span>
+                </div>
+                <div class="card-body p-0" id="bloqueHistorico"></div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="py-4 text-center">
+        <div class="container">
+            <p class="mb-1 text-white-50">Internas Municipales 2026 — Sistema de Consulta</p>
+            <p class="mb-0 text-white-50" style="font-size: 0.8rem;">
+                Desarrollado por <strong>AJBO</strong>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Lógica JS -->
+    <script>
+    document.getElementById('formBusqueda').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const cedula = document.getElementById('cedula').value.trim();
+        if (!cedula) return;
+
+        document.getElementById('cargando').classList.remove('d-none');
+        document.getElementById('resultados').classList.add('d-none');
+
+        try {
+            const res = await fetch(`/api/consultar?cedula=${cedula}`);
+            const data = await res.json();
+            
+            document.getElementById('cargando').classList.add('d-none');
+            document.getElementById('resultados').classList.remove('d-none');
+
+            const hb = document.getElementById('bloqueHabilitado');
+            const badgeHb = document.getElementById('badgeHabilitado');
+
+            if (data.habilitado) {
+                const h = data.habilitado;
+                badgeHb.className = "badge bg-success badge-status";
+                badgeHb.innerText = "HABILITADO";
+
+                hb.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-ficha mb-0">
+                            <tbody>
+                                <tr>
+                                    <td class="label-cell">Nombre y Apellido</td>
+                                    <td class="value-cell fw-bold text-uppercase" style="font-size: 1.05rem;">${h.nombre_completo}</td>
+                                    <td class="label-cell">Nacionalidad</td>
+                                    <td class="value-cell">${h.nacionalidad || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Departamento</td>
+                                    <td class="value-cell">${h.departamento || '-'}</td>
+                                    <td class="label-cell">Fec. Nacimiento</td>
+                                    <td class="value-cell">${h.fec_nac || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Distrito</td>
+                                    <td class="value-cell">${h.distrito || '-'}</td>
+                                    <td class="label-cell">Sexo</td>
+                                    <td class="value-cell">${h.sexo || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Zona</td>
+                                    <td class="value-cell" colspan="3">${h.zona || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Local</td>
+                                    <td class="value-cell" colspan="3">${h.local || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Mesa / Orden</td>
+                                    <td class="value-cell fw-bold" colspan="3">MESA: ${h.mesa || '-'} &nbsp;&nbsp;|&nbsp;&nbsp; ORDEN: ${h.orden || '-'}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Tipo Voto</td>
+                                    <td class="value-cell">${h.tipo_voto || '-'}</td>
+                                    <td class="label-cell">Pueblo / Comunidad Indígena</td>
+                                    <td class="value-cell">${h.pueblo_indigena || '0'} / ${h.comunidad_indigena || '0'}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else {
+                badgeHb.className = "badge bg-secondary badge-status";
+                badgeHb.innerText = "NO HABILITADO";
+                hb.innerHTML = `
+                    <div class="p-4 text-center text-muted fw-semibold">
+                        No se encontró una inscripción habilitada en el RCP para el número de cédula ingresado.
+                    </div>
+                `;
+            }
+
+            const hist = document.getElementById('bloqueHistorico');
+            if (data.historico && data.historico.length > 0) {
+                let html = `
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0" style="font-size: 0.88rem;">
+                        <thead class="table-light">
+                            <tr class="text-uppercase small fw-bold">
+                                <th>Cédula</th>
+                                <th>Nombre y Apellido</th>
+                                <th>Motivo</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                
+                data.historico.forEach(item => {
+                    html += `
+                        <tr class="table-warning fw-semibold">
+                            <td>${item.cedula}</td>
+                            <td class="text-uppercase">${item.nombre_completo}</td>
+                            <td class="text-danger fw-bold">${item.motivo}</td>
+                            <td>${item.detalle || '-'}</td>
+                        </tr>
+                        <tr class="bg-light">
+                            <td colspan="4" class="text-muted py-2">
+                                <strong>Departamento:</strong> ${item.departamento} | <strong>Distrito:</strong> ${item.distrito} | <strong>Zona:</strong> ${item.zona} | <strong>Local:</strong> ${item.local}<br>
+                                <strong>Fecha Inscr.:</strong> ${item.fecha_inscr} | <strong>Tipo:</strong> ${item.tipo_inscr} | <strong>Talonario:</strong> ${item.talonario} | <strong>Boleta N°:</strong> ${item.boleta}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table></div>`;
+                hist.innerHTML = html;
+            } else {
+                hist.innerHTML = `
+                    <div class="p-3 text-center text-muted fw-semibold small">
+                        Sin antecedentes ni registros históricos archivados para esta C.I.
+                    </div>
+                `;
+            }
+
+        } catch (err) {
+            document.getElementById('cargando').classList.add('d-none');
+            alert("Ocurrió un error al realizar la consulta.");
+        }
+    });
+    </script>
+
+</body>
+</html>
