@@ -34,7 +34,6 @@
             overflow-x: hidden;
         }
 
-        /* FONDO ILUMINADO ROJO - MÁS VISIBLE Y MENOS TRANSPARENTE */
         .ambient-light {
             position: fixed;
             top: -20%;
@@ -55,7 +54,6 @@
             100% { transform: translateX(5%) translateY(3%) scale(1.08); }
         }
 
-        /* LOGOS 10% MÁS GRANDES (165px) CON RUTA DINÁMICA DE FLASK */
         .header-logo-left {
             position: absolute;
             top: 1.5rem;
@@ -78,29 +76,29 @@
             display: block !important;
         }
 
-        /* CENTRADO PERFECTO EN EL MEDIO DE LA PANTALLA */
         main {
             position: relative;
             z-index: 2;
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 480px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem 1rem;
         }
 
         .card-3d {
             width: 100%;
+            max-width: 500px;
             background: var(--card-glass);
             backdrop-filter: blur(16px);
             border-radius: 20px;
             padding: 1.8rem;
             box-shadow: var(--shadow-3d);
             border: 1px solid rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
         }
 
         .search-title {
@@ -203,6 +201,7 @@
         .alert {
             display: none;
             width: 100%;
+            max-width: 600px;
             padding: 1rem 1.2rem;
             border-radius: 12px;
             margin-top: 1.5rem;
@@ -216,125 +215,133 @@
 
         .results-wrapper {
             width: 100%;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
 
-        .result-card-3d {
-            background: var(--card-glass);
-            backdrop-filter: blur(16px);
-            border-radius: 18px;
+        /* DISEÑO TIPO ESCRITORIO (ESTILO FORMULARIO OFICIAL RCP) */
+        .rcp-form-card {
+            background: #eef2f7;
+            border: 3px solid #333;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             overflow: hidden;
-            box-shadow: var(--shadow-3d);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            width: 100%;
+            margin-bottom: 1rem;
         }
 
-        .card-header-3d {
-            padding: 1rem 1.4rem;
+        .rcp-header {
+            background: #374151;
+            color: white;
+            text-align: center;
+            padding: 0.6rem;
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .rcp-header.success { background: #1f2937; border-bottom: 2px solid #111; }
+        .rcp-header.warning { background: #374151; border-bottom: 2px solid #111; }
+
+        .rcp-body {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        /* FILAS Y BLOQUES DE DATOS ESTILO FORMULARIO */
+        .rcp-row {
+            display: grid;
+            grid-template-columns: 140px 1fr 140px 160px;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .rcp-row.two-cols {
+            grid-template-columns: 140px 1fr;
+        }
+
+        .rcp-row.three-cols {
+            grid-template-columns: 140px 1fr 120px 80px;
+        }
+
+        .rcp-row.meta-row {
+            grid-template-columns: 1fr 1fr;
+            justify-content: center;
+            max-width: 500px;
+            margin: 4px auto;
+        }
+
+        .rcp-label {
+            background: #d1d5db;
+            color: #111;
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 2px;
+            text-transform: uppercase;
+            height: 100%;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
         }
 
-        .card-header-3d.success {
-            background: rgba(46, 125, 50, 0.1);
-            color: #1b5e20;
-            border-bottom: 2px solid #2e7d32;
-        }
-
-        .card-header-3d.warning {
-            background: rgba(245, 127, 23, 0.1);
-            color: #e65100;
-            border-bottom: 2px solid #f57f17;
-        }
-
-        .card-body-3d {
-            padding: 1.4rem;
-        }
-
-        .data-grid-3d {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.8rem;
-        }
-
-        .data-box {
+        .rcp-value {
             background: #ffffff;
-            padding: 0.7rem 0.9rem;
-            border-radius: 10px;
-            border: 1px solid #f0f0f0;
-        }
-
-        .data-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
+            color: #111;
+            padding: 6px 10px;
+            font-size: 0.85rem;
             font-weight: 700;
-            margin-bottom: 0.15rem;
-            display: block;
+            border: 1px solid #cbd5e1;
+            border-radius: 2px;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
         }
 
-        .data-value {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .highlight-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.8rem;
-            margin-top: 1.2rem;
-        }
-
-        .highlight-card {
-            background: linear-gradient(145deg, #ffffff, #fff5f5);
-            border-radius: 12px;
-            padding: 1rem;
+        .rcp-sub-banner {
+            background: #cbd5e1;
+            color: #111;
             text-align: center;
-            box-shadow: var(--inset-shadow);
-            border: 1px solid rgba(211, 47, 47, 0.2);
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 5px;
+            border: 1px solid #94a3b8;
+            text-transform: uppercase;
+            margin: 4px 0;
         }
 
-        .highlight-card .data-label {
-            color: var(--dark-red);
+        /* TABLA HISTÓRICA PROFESIONAL */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border: 1px solid #cbd5e1;
+            margin-top: 5px;
+        }
+
+        .table-rcp {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 0.8rem;
         }
 
-        .highlight-card .data-value {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--primary-red);
-        }
-
-        .table-container {
-            overflow-x: auto;
-            border-radius: 8px;
-        }
-
-        .table-3d {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            background: #ffffff;
-        }
-
-        .table-3d th, .table-3d td {
-            padding: 0.7rem 0.8rem;
+        .table-rcp th {
+            background: #1f2937;
+            color: white;
+            padding: 6px 8px;
             text-align: left;
-            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
         }
 
-        .table-3d th {
-            background: #fdf2f2;
-            color: var(--dark-red);
-            font-weight: 800;
-            font-size: 0.7rem;
-            text-transform: uppercase;
+        .table-rcp td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1f2937;
+            font-weight: 600;
         }
 
         footer {
@@ -350,11 +357,19 @@
             border-top: 1px solid #e5e7eb;
         }
 
+        /* ADAPTACIÓN MÓVIL (SE CONVIERTE EN BLOQUES VERTICALES LIMPIOS) */
         @media (max-width: 768px) {
             .header-logo-left { top: 0.8rem; left: 0.8rem; height: 110px; }
             .header-logo-right { top: 0.8rem; right: 0.8rem; height: 110px; }
             main { padding-top: 7rem; }
             .search-form { flex-direction: column; }
+            
+            .rcp-row, .rcp-row.two-cols, .rcp-row.three-cols, .rcp-row.meta-row {
+                grid-template-columns: 1fr !important;
+                gap: 3px;
+            }
+            .rcp-label { border-radius: 2px 2px 0 0; }
+            .rcp-value { border-radius: 0 0 2px 2px; }
         }
     </style>
 </head>
@@ -362,7 +377,6 @@
 
     <div class="ambient-light"></div>
 
-    <!-- RUTAS COMPATIBLES CON GITHUB Y PRODUCCIÓN (CARPETA STATIC) -->
     <img src="{{ url_for('static', filename='logo-left.png') }}" alt="Logo Izquierda" class="header-logo-left" onerror="this.style.display='none'">
     <img src="{{ url_for('static', filename='logo-right.png') }}" alt="Logo Derecha" class="header-logo-right" onerror="this.style.display='none'">
 
@@ -433,31 +447,58 @@
                 if (data.habilitado) {
                     const h = data.habilitado;
                     resultsContainer.innerHTML += `
-                        <div class="result-card-3d">
-                            <div class="card-header-3d success">
-                                <i class="fa-solid fa-circle-check"></i> HABILITADO EN RCP
+                        <div class="rcp-form-card">
+                            <div class="rcp-header success">
+                                <i class="fa-solid fa-circle-check"></i> INSCRIPCIONES HABILITADAS EN RCP
                             </div>
-                            <div class="card-body-3d">
-                                <div class="data-grid-3d">
-                                    <div class="data-box"><span class="data-label">Cédula</span><span class="data-value">${h.cedula}</span></div>
-                                    <div class="data-box"><span class="data-label">Nombre Completo</span><span class="data-value">${h.nombre_completo}</span></div>
-                                    <div class="data-box"><span class="data-label">Nacionalidad / Sexo</span><span class="data-value">${h.nacionalidad} (${h.sexo})</span></div>
-                                    <div class="data-box"><span class="data-label">Fecha Nacimiento</span><span class="data-value">${h.fec_nac || 'N/A'}</span></div>
-                                    <div class="data-box"><span class="data-label">Departamento</span><span class="data-value">${h.departamento}</span></div>
-                                    <div class="data-box"><span class="data-label">Distrito</span><span class="data-value">${h.distrito}</span></div>
-                                    <div class="data-box"><span class="data-label">Zona / Local</span><span class="data-value">${h.local}</span></div>
-                                    <div class="data-box"><span class="data-label">Tipo Voto</span><span class="data-value">${h.tipo_voto}</span></div>
+                            <div class="rcp-body">
+                                <div class="rcp-row">
+                                    <div class="rcp-label">Nombre y Apellido</div>
+                                    <div class="rcp-value">${h.nombre_completo}</div>
+                                    <div class="rcp-label">Nacionalidad</div>
+                                    <div class="rcp-value">${h.nacionalidad}</div>
+                                </div>
+                                <div class="rcp-row three-cols">
+                                    <div class="rcp-label">Departamento</div>
+                                    <div class="rcp-value">${h.departamento}</div>
+                                    <div class="rcp-label">Fec. de Nac.</div>
+                                    <div class="rcp-value">${h.fec_nac || 'N/A'}</div>
+                                </div>
+                                <div class="rcp-row three-cols">
+                                    <div class="rcp-label">Distrito</div>
+                                    <div class="rcp-value">${h.distrito}</div>
+                                    <div class="rcp-label">Sexo</div>
+                                    <div class="rcp-value">${h.sexo}</div>
+                                </div>
+                                <div class="rcp-row two-cols">
+                                    <div class="rcp-label">Zona</div>
+                                    <div class="rcp-value">${h.zona || 'N/A'}</div>
+                                </div>
+                                <div class="rcp-row two-cols">
+                                    <div class="rcp-label">Local</div>
+                                    <div class="rcp-value">${h.local}</div>
+                                </div>
+                                
+                                <div class="rcp-row meta-row">
+                                    <div style="display:flex; gap:6px; align-items:center;">
+                                        <div class="rcp-label" style="width:70px; justify-content:center;">MESA</div>
+                                        <div class="rcp-value" style="justify-content:center; flex:1;">${h.mesa}</div>
+                                    </div>
+                                    <div style="display:flex; gap:6px; align-items:center;">
+                                        <div class="rcp-label" style="width:70px; justify-content:center;">ORDEN</div>
+                                        <div class="rcp-value" style="justify-content:center; flex:1;">${h.orden}</div>
+                                    </div>
                                 </div>
 
-                                <div class="highlight-container">
-                                    <div class="highlight-card">
-                                        <span class="data-label">MESA</span>
-                                        <div class="data-value">${h.mesa}</div>
-                                    </div>
-                                    <div class="highlight-card">
-                                        <span class="data-label">ORDEN</span>
-                                        <div class="data-value">${h.orden}</div>
-                                    </div>
+                                <div class="rcp-sub-banner">${h.tipo_voto || 'MESA NORMAL'}</div>
+
+                                <div class="rcp-row two-cols">
+                                    <div class="rcp-label">Pueblo Indígena</div>
+                                    <div class="rcp-value">${h.pueblo_indigena || 'SIN DATOS'}</div>
+                                </div>
+                                <div class="rcp-row two-cols">
+                                    <div class="rcp-label">Comunidad Indígena</div>
+                                    <div class="rcp-value">${h.comunidad_indigena || 'SIN DATOS'}</div>
                                 </div>
                             </div>
                         </div>
@@ -467,36 +508,60 @@
                 if (data.historico && data.historico.length > 0) {
                     let filasTabla = data.historico.map(i => `
                         <tr>
-                            <td><strong>${i.motivo}</strong><br><small style="color:var(--text-muted);">${i.detalle}</small></td>
-                            <td>${i.fecha_inscr}</td>
-                            <td>${i.distrito}</td>
-                            <td>${i.local}</td>
-                            <td>${i.tipo_inscr}</td>
-                            <td>Tal: ${i.talonario} / Bol: ${i.boleta}</td>
+                            <td>${i.cedula || cedula}</td>
+                            <td><strong>${i.nombre_completo || (data.habilitado ? data.habilitado.nombre_completo : 'N/A')}</strong></td>
+                            <td><strong style="color:var(--dark-red);">${i.motivo}</strong></td>
+                            <td>${i.detalle || ''}</td>
                         </tr>
                     `).join('');
 
-                    resultsContainer.innerHTML += `
-                        <div class="result-card-3d">
-                            <div class="card-header-3d warning">
-                                <i class="fa-solid fa-clock-rotate-left"></i> REGISTROS HISTÓRICOS
+                    let detallesHistoricosCards = data.historico.map(i => `
+                        <div style="background: #fff; border: 1px solid #cbd5e1; padding: 10px; margin-top: 6px; border-radius: 3px;">
+                            <div class="rcp-row two-cols" style="margin-bottom: 4px;">
+                                <div class="rcp-label">Departamento</div>
+                                <div class="rcp-value">${i.departamento || 'N/A'}</div>
                             </div>
-                            <div class="card-body-3d">
+                            <div class="rcp-row two-cols" style="margin-bottom: 4px;">
+                                <div class="rcp-label">Distrito</div>
+                                <div class="rcp-value">${i.distrito || 'N/A'}</div>
+                            </div>
+                            <div class="rcp-row two-cols" style="margin-bottom: 4px;">
+                                <div class="rcp-label">Zona</div>
+                                <div class="rcp-value">${i.zona || 'N/A'}</div>
+                            </div>
+                            <div class="rcp-row two-cols" style="margin-bottom: 4px;">
+                                <div class="rcp-label">Local</div>
+                                <div class="rcp-value">${i.local || 'N/A'}</div>
+                            </div>
+                            <div class="rcp-row two-cols" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap:4px; margin-top:6px;">
+                                <div style="display:flex; flex-direction:column;"><span class="rcp-label" style="font-size:0.65rem;">Fecha Inscr.</span><span class="rcp-value" style="font-size:0.8rem;">${i.fecha_inscr || ''}</span></div>
+                                <div style="display:flex; flex-direction:column;"><span class="rcp-label" style="font-size:0.65rem;">Tipo Inscr.</span><span class="rcp-value" style="font-size:0.8rem;">${i.tipo_inscr || ''}</span></div>
+                                <div style="display:flex; flex-direction:column;"><span class="rcp-label" style="font-size:0.65rem;">Talonario</span><span class="rcp-value" style="font-size:0.8rem;">${i.talonario || ''}</span></div>
+                                <div style="display:flex; flex-direction:column;"><span class="rcp-label" style="font-size:0.65rem;">Boleta N°</span><span class="rcp-value" style="font-size:0.8rem;">${i.boleta || ''}</span></div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    resultsContainer.innerHTML += `
+                        <div class="rcp-form-card">
+                            <div class="rcp-header warning">
+                                <i class="fa-solid fa-clock-rotate-left"></i> INSCRIPCIONES NO HABILITADAS - HISTÓRICO
+                            </div>
+                            <div class="rcp-body">
                                 <div class="table-container">
-                                    <table class="table-3d">
+                                    <table class="table-rcp">
                                         <thead>
                                             <tr>
-                                                <th>Motivo / Detalle</th>
-                                                <th>Fecha</th>
-                                                <th>Distrito</th>
-                                                <th>Local</th>
-                                                <th>Tipo</th>
-                                                <th>Comprobante</th>
+                                                <th>N° CÉDULA</th>
+                                                <th>NOMBRE y APELLIDO</th>
+                                                <th>MOTIVO</th>
+                                                <th>DETALLE</th>
                                             </tr>
                                         </thead>
                                         <tbody>${filasTabla}</tbody>
                                     </table>
                                 </div>
+                                ${detallesHistoricosCards}
                             </div>
                         </div>
                     `;
