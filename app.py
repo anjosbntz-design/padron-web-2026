@@ -9,6 +9,30 @@ CORS(app)  # Permite peticiones desde GitHub Pages / Cloudflare Pages
 
 DB_NAME = "padron.db"
 
+def init_db_indexes():
+    """Crea indices para acelerar las busquedas con TRIM/CAST a menos de 0.1s"""
+    if os.path.exists(DB_NAME):
+        try:
+            conn = sqlite3.connect(DB_NAME)
+            cursor = conn.cursor()
+            
+            # Indice directo
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_padron_cedula ON padron (cedula);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_inhabilitados_cedula ON inhabilitados_historico (cedula);")
+            
+            # Indice de expresion para acelerar TRIM(cedula)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_padron_cedula_trim ON padron (CAST(TRIM(cedula) AS TEXT));")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_inh_cedula_trim ON inhabilitados_historico (CAST(TRIM(cedula) AS TEXT));")
+            
+            conn.commit()
+            conn.close()
+            print("--- Indices de SQLite verificados con exito ---")
+        except Exception as e:
+            print(f"Error al verificar indices: {e}")
+
+# Ejecuta la optimización al iniciar la aplicación en Render
+init_db_indexes()
+
 def formatear_fecha(fecha_str):
     if not fecha_str or str(fecha_str).strip() in ['None', '']:
         return ""
@@ -28,6 +52,7 @@ def get_db_connection():
 
 @app.route('/')
 def index():
+    # Retorna la vista limpia sin pasar ninguna cedula por defecto
     return render_template('index.html')
 
 @app.route('/api/consultar', methods=['GET'])
@@ -42,7 +67,7 @@ def consultar_cedula():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 1. INSCRIPCIÓN HABILITADA RCP
+    # 1. INSCRIPCIÓN HABILITADA RCP (Optimizada con índice)
     cursor.execute('''
         SELECT 
             p.cedula, p.nombres, p.apellidos,

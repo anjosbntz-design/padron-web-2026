@@ -3,31 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consulta de Padrón Electoral - TSJE</title>
-    <!-- FontAwesome para Íconos -->
+    <title>Búsqueda por N° de Cédula</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #c8102e; /* Rojo Paraguay */
-            --white-color: #ffffff;
-            --blue-color: #0038a8; /* Azul Paraguay */
-            --bg-dark: #0f111a;
-            --card-glass: rgba(255, 255, 255, 0.88);
-            --text-dark: #1e2029;
-            --text-muted: #5a6072;
-            --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
-            --inset-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8), inset 0 -2px 4px rgba(0, 0, 0, 0.05);
+            --primary-red: #d32f2f;
+            --dark-red: #8e0000;
+            --bright-red: #ff3344;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --card-glass: rgba(255, 255, 255, 0.95);
+            --shadow-3d: 0 15px 35px rgba(211, 47, 47, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
+            --inset-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: #f4f6fb;
             color: var(--text-dark);
             min-height: 100vh;
             display: flex;
@@ -36,136 +34,89 @@
             overflow-x: hidden;
         }
 
-        /* --- FONDO ANIMADO LUZ TRICOLOR 3D --- */
+        /* FONDO ILUMINADO ROJO - MÁS VISIBLE Y MENOS TRANSPARENTE */
         .ambient-light {
             position: fixed;
             top: -20%;
-            left: -50%;
-            width: 200%;
+            left: -30%;
+            width: 160%;
             height: 140%;
             z-index: 0;
             pointer-events: none;
-            background: linear-gradient(
-                115deg, 
-                rgba(200, 16, 46, 0.35) 0%, 
-                rgba(255, 255, 255, 0.25) 35%, 
-                rgba(0, 56, 168, 0.35) 70%,
-                rgba(200, 16, 46, 0.35) 100%
-            );
-            filter: blur(80px);
-            animation: moveLight 12s ease-in-out infinite alternate;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 30, 50, 0.65) 0%, transparent 55%),
+                        radial-gradient(circle at 70% 60%, rgba(0, 80, 255, 0.35) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 80%, rgba(220, 20, 40, 0.5) 0%, transparent 55%);
+            filter: blur(50px);
+            animation: moveLight 4s ease-in-out infinite alternate;
         }
 
         @keyframes moveLight {
-            0% {
-                transform: translateX(-25%) translateY(-10%) rotate(-5deg);
-            }
-            100% {
-                transform: translateX(15%) translateY(10%) rotate(5deg);
-            }
+            0% { transform: translateX(-5%) translateY(-3%) scale(1); }
+            100% { transform: translateX(5%) translateY(3%) scale(1.08); }
         }
 
-        /* --- HEADER INSTITUCIONAL CON LOGOS --- */
-        header {
-            position: relative;
-            z-index: 1;
-            background: rgba(15, 17, 26, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.2rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .header-logo-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .header-logo {
-            height: 55px;
+        /* LOGOS 10% MÁS GRANDES (165px) CON RUTA DINÁMICA DE FLASK */
+        .header-logo-left {
+            position: absolute;
+            top: 1.5rem;
+            left: 2rem;
+            height: 165px;
             width: auto;
+            z-index: 10;
             object-fit: contain;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
-            transition: transform 0.3s ease;
+            display: block !important;
         }
 
-        .header-logo:hover {
-            transform: scale(1.05) translateZ(10px);
+        .header-logo-right {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            height: 165px;
+            width: auto;
+            z-index: 10;
+            object-fit: contain;
+            display: block !important;
         }
 
-        .header-title {
-            text-align: right;
-            color: white;
-        }
-
-        .header-title h1 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, #ffffff, #dcdcdc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-        }
-
-        .header-title p {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* --- CONTENEDOR PRINCIPAL --- */
+        /* CENTRADO PERFECTO EN EL MEDIO DE LA PANTALLA */
         main {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             flex: 1;
-            max-width: 920px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            margin: 2.5rem auto;
-            padding: 0 1.2rem;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
         }
 
-        /* --- TARJETA DE BÚSQUEDA 3D --- */
         .card-3d {
+            width: 100%;
             background: var(--card-glass);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border-radius: 20px;
-            padding: 2.2rem;
+            padding: 1.8rem;
             box-shadow: var(--shadow-3d);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            transform: perspective(1000px) rotateX(1deg);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 2rem;
-        }
-
-        .card-3d:hover {
-            transform: perspective(1000px) rotateX(0deg) translateY(-4px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.9);
         }
 
         .search-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--text-dark);
+            color: var(--dark-red);
             margin-bottom: 1.2rem;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.6rem;
-        }
-
-        .search-title i {
-            color: var(--primary-color);
-            font-size: 1.4rem;
         }
 
         .search-form {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
         }
 
         .input-wrapper {
@@ -175,81 +126,73 @@
 
         .input-wrapper i {
             position: absolute;
-            left: 1.2rem;
+            left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .input-3d {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            font-size: 1.15rem;
+            padding: 0.85rem 1rem 0.85rem 2.6rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            border: 2px solid rgba(0, 0, 0, 0.08);
+            border: 2px solid #e5e7eb;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.9);
+            background: #ffffff;
             box-shadow: var(--inset-shadow);
             outline: none;
             transition: all 0.3s ease;
             color: var(--text-dark);
+            letter-spacing: 0.5px;
         }
 
         .input-3d:focus {
-            border-color: var(--blue-color);
-            background: #ffffff;
-            box-shadow: 0 0 15px rgba(0, 56, 168, 0.2);
+            border-color: var(--primary-red);
+            box-shadow: 0 0 10px rgba(211, 47, 47, 0.2);
         }
 
         .btn-3d {
-            background: linear-gradient(135deg, var(--primary-color), #900c22);
+            background: linear-gradient(135deg, var(--bright-red), var(--dark-red));
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.05rem;
+            padding: 0.85rem 1.4rem;
+            font-size: 0.95rem;
             font-weight: 700;
             border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(200, 16, 46, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
-            transition: all 0.25s ease;
+            box-shadow: 0 6px 15px rgba(211, 47, 47, 0.3);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.5rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .btn-3d:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(200, 16, 46, 0.6);
-            background: linear-gradient(135deg, #da1435, var(--primary-color));
+            box-shadow: 0 10px 20px rgba(211, 47, 47, 0.4);
         }
 
-        .btn-3d:active {
-            transform: translateY(1px);
-            box-shadow: 0 4px 10px rgba(200, 16, 46, 0.4);
-        }
-
-        /* --- LOADER AMBIENTAL --- */
         .loader {
             display: none;
             text-align: center;
-            padding: 2.5rem;
-            color: white;
+            padding: 1.5rem;
+            color: var(--dark-red);
+            font-weight: 600;
+            width: 100%;
         }
 
         .spinner-3d {
-            width: 48px;
-            height: 48px;
-            border: 5px solid rgba(255, 255, 255, 0.2);
-            border-top: 5px solid var(--primary-color);
-            border-right: 5px solid #ffffff;
-            border-bottom: 5px solid var(--blue-color);
+            width: 38px;
+            height: 38px;
+            border: 4px solid rgba(211, 47, 47, 0.15);
+            border-top: 4px solid var(--primary-red);
             border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-            margin: 0 auto 1rem;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 0.6rem;
         }
 
         @keyframes spin {
@@ -257,242 +200,182 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* --- ALERTAS --- */
         .alert {
             display: none;
-            padding: 1.2rem;
-            border-radius: 14px;
-            margin-bottom: 2rem;
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
             font-weight: 600;
-            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+            background: #ffebee;
+            color: #c62828;
+            border-left: 5px solid #d32f2f;
             box-shadow: var(--shadow-3d);
         }
 
-        .alert-error {
-            background: rgba(255, 235, 238, 0.92);
-            color: #b71c1c;
-            border: 1px solid #ffcdd2;
-            border-left: 6px solid #d32f2f;
-        }
-
-        /* --- RESULTADOS 3D --- */
         .results-wrapper {
+            width: 100%;
+            margin-top: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .result-card-3d {
             background: var(--card-glass);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
+            border-radius: 18px;
             overflow: hidden;
             box-shadow: var(--shadow-3d);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            animation: fadeIn3D 0.5s ease-out forwards;
-        }
-
-        @keyframes fadeIn3D {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            border: 1px solid rgba(255, 255, 255, 0.9);
         }
 
         .card-header-3d {
-            padding: 1.2rem 1.8rem;
+            padding: 1rem 1.4rem;
             font-weight: 800;
-            font-size: 1.15rem;
+            font-size: 1rem;
             display: flex;
             align-items: center;
-            gap: 0.7rem;
-            letter-spacing: 0.5px;
+            gap: 0.6rem;
         }
 
         .card-header-3d.success {
-            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15), rgba(76, 175, 80, 0.05));
+            background: rgba(46, 125, 50, 0.1);
             color: #1b5e20;
             border-bottom: 2px solid #2e7d32;
         }
 
         .card-header-3d.warning {
-            background: linear-gradient(135deg, rgba(245, 127, 23, 0.15), rgba(255, 179, 0, 0.05));
+            background: rgba(245, 127, 23, 0.1);
             color: #e65100;
             border-bottom: 2px solid #f57f17;
         }
 
         .card-body-3d {
-            padding: 2rem;
+            padding: 1.4rem;
         }
 
         .data-grid-3d {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
         }
 
         .data-box {
-            background: rgba(255, 255, 255, 0.6);
-            padding: 0.9rem 1.1rem;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            background: #ffffff;
+            padding: 0.7rem 0.9rem;
+            border-radius: 10px;
+            border: 1px solid #f0f0f0;
         }
 
         .data-label {
-            font-size: 0.78rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.15rem;
             display: block;
         }
 
         .data-value {
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--text-dark);
         }
 
-        /* Cajas Destacadas de Mesa y Orden */
         .highlight-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 1.8rem;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
         }
 
         .highlight-card {
-            background: linear-gradient(145deg, #ffffff, #f0f4f9);
-            border-radius: 16px;
-            padding: 1.2rem;
+            background: linear-gradient(145deg, #ffffff, #fff5f5);
+            border-radius: 12px;
+            padding: 1rem;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 56, 168, 0.08), var(--inset-shadow);
-            border: 1px solid rgba(0, 56, 168, 0.15);
+            box-shadow: var(--inset-shadow);
+            border: 1px solid rgba(211, 47, 47, 0.2);
         }
 
         .highlight-card .data-label {
-            color: var(--blue-color);
-            font-size: 0.85rem;
+            color: var(--dark-red);
+            font-size: 0.8rem;
         }
 
         .highlight-card .data-value {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 900;
-            color: var(--primary-color);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: var(--primary-red);
         }
 
-        /* TABLA HISTÓRICA 3D */
         .table-container {
             overflow-x: auto;
-            border-radius: 12px;
-            box-shadow: var(--inset-shadow);
+            border-radius: 8px;
         }
 
         .table-3d {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.92rem;
-            background: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            background: #ffffff;
         }
 
         .table-3d th, .table-3d td {
-            padding: 1rem 1.2rem;
+            padding: 0.7rem 0.8rem;
             text-align: left;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .table-3d th {
-            background: rgba(15, 17, 26, 0.05);
-            color: var(--text-dark);
+            background: #fdf2f2;
+            color: var(--dark-red);
             font-weight: 800;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
         }
 
-        /* --- FOOTER CON CREDENCIALES Y MARCA --- */
         footer {
             position: relative;
-            z-index: 1;
-            background: rgba(15, 17, 26, 0.85);
-            backdrop-filter: blur(12px);
-            color: #a0a5b5;
+            z-index: 2;
+            background: #ffffff;
+            color: var(--text-muted);
             text-align: center;
-            padding: 2rem 1rem;
-            font-size: 0.88rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
             margin-top: auto;
+            border-top: 1px solid #e5e7eb;
         }
 
-        footer strong {
-            color: #ffffff;
-        }
-
-        .footer-credits {
-            margin-top: 0.6rem;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        @media (max-width: 650px) {
-            header {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            .header-title {
-                text-align: center;
-            }
-            .search-form {
-                flex-direction: column;
-            }
-            .btn-3d {
-                justify-content: center;
-            }
-            .highlight-container {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 768px) {
+            .header-logo-left { top: 0.8rem; left: 0.8rem; height: 110px; }
+            .header-logo-right { top: 0.8rem; right: 0.8rem; height: 110px; }
+            main { padding-top: 7rem; }
+            .search-form { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-    <!-- EFECTO LUZ TRICOLOR ANIMADO EN EL FONDO -->
     <div class="ambient-light"></div>
 
-    <!-- HEADER INSTITUCIONAL -->
-    <header>
-        <div class="header-logo-container">
-            <!-- Carga de Logos desde la carpeta static -->
-            <img src="{{ url_for('static', filename='logo_tsje.png') }}" alt="TSJE Logo" class="header-logo" onerror="this.style.display='none'">
-            <img src="{{ url_for('static', filename='logo_dgre.png') }}" alt="DGRE Logo" class="header-logo" onerror="this.style.display='none'">
-        </div>
-        <div class="header-title">
-            <h1>Padrón Electoral Nacional</h1>
-            <p>Dirección de Registros Electorales - TSJE</p>
-        </div>
-    </header>
+    <!-- RUTAS COMPATIBLES CON GITHUB Y PRODUCCIÓN (CARPETA STATIC) -->
+    <img src="{{ url_for('static', filename='logo-left.png') }}" alt="Logo Izquierda" class="header-logo-left" onerror="this.style.display='none'">
+    <img src="{{ url_for('static', filename='logo-right.png') }}" alt="Logo Derecha" class="header-logo-right" onerror="this.style.display='none'">
 
-    <!-- CONTENEDOR PRINCIPAL -->
     <main>
-        <!-- Tarjeta de Búsqueda 3D -->
         <section class="card-3d">
             <div class="search-title">
-                <i class="fa-solid fa-id-card"></i>
-                <span>Consulta de Inscripción Cívica</span>
+                <i class="fa-solid fa-address-card"></i>
+                <span>Búsqueda por N° de Cédula</span>
             </div>
             <form class="search-form" id="searchForm" onsubmit="realizarConsulta(event)">
                 <div class="input-wrapper">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="cedulaInput" class="input-3d" placeholder="1234567" required autocomplete="off">
+                    <input type="text" id="cedulaInput" class="input-3d" placeholder="N° Cédula" maxlength="9" required autocomplete="off">
                 </div>
                 <button type="submit" class="btn-3d">
                     <i class="fa-solid fa-search"></i> Consultar
@@ -500,23 +383,18 @@
             </form>
         </section>
 
-        <!-- Loader Ambiental -->
         <div id="loader" class="loader">
             <div class="spinner-3d"></div>
-            <p style="font-weight: 600; letter-spacing: 0.5px;">Consultando Registro Cívico Permanente...</p>
+            <p>Consultando base de datos...</p>
         </div>
 
-        <!-- Alerta Error -->
-        <div id="alertError" class="alert alert-error"></div>
+        <div id="alertError" class="alert"></div>
 
-        <!-- Resultados -->
         <div id="resultsContainer" class="results-wrapper"></div>
     </main>
 
-    <!-- FOOTER INSTITUCIONAL -->
     <footer>
-        <p>&copy; 2026 - Tribunal Superior de Justicia Electoral | <strong>República del Paraguay</strong></p>
-        <p class="footer-credits">Desarrollado para la Dirección de Registros Electorales (DGRE)</p>
+        Desarrollado por AJBO Multimedios
     </footer>
 
     <script>
@@ -528,7 +406,6 @@
             const alertError = document.getElementById('alertError');
             const resultsContainer = document.getElementById('resultsContainer');
 
-            // Limpieza de estado
             alertError.style.display = 'none';
             resultsContainer.innerHTML = '';
             
@@ -538,15 +415,14 @@
 
             try {
                 const response = await fetch(`/api/consultar?cedula=${encodeURIComponent(cedula)}`);
-                const data = await response.json();
-
-                loader.style.display = 'none';
-
+                
                 if (!response.ok) {
-                    alertError.textContent = data.error || 'Error al procesar la solicitud.';
-                    alertError.style.display = 'block';
-                    return;
+                    const text = await response.text();
+                    throw new Error(`Error en el servidor (${response.status}): ${text}`);
                 }
+
+                const data = await response.json();
+                loader.style.display = 'none';
 
                 if (!data.habilitado && (!data.historico || data.historico.length === 0)) {
                     alertError.textContent = 'No se encontraron registros coincidentes con el número de cédula ingresado.';
@@ -554,67 +430,40 @@
                     return;
                 }
 
-                // Render Habilitado RCP
                 if (data.habilitado) {
                     const h = data.habilitado;
-                    const htmlHabilitado = `
+                    resultsContainer.innerHTML += `
                         <div class="result-card-3d">
                             <div class="card-header-3d success">
-                                <i class="fa-solid fa-circle-check"></i> HABILITADO / A EN EL REGISTRO CÍVICO PERMANENTE
+                                <i class="fa-solid fa-circle-check"></i> HABILITADO EN RCP
                             </div>
                             <div class="card-body-3d">
                                 <div class="data-grid-3d">
-                                    <div class="data-box">
-                                        <span class="data-label">Cédula de Identidad</span>
-                                        <span class="data-value">${h.cedula}</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Nombre Completo</span>
-                                        <span class="data-value">${h.nombre_completo}</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Nacionalidad / Sexo</span>
-                                        <span class="data-value">${h.nacionalidad} (${h.sexo})</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Fecha Nacimiento</span>
-                                        <span class="data-value">${h.fec_nac || 'N/A'}</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Departamento</span>
-                                        <span class="data-value">${h.departamento}</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Distrito</span>
-                                        <span class="data-value">${h.distrito}</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Zona / Local</span>
-                                        <span class="data-value">${h.local}</span>
-                                    </div>
-                                    <div class="data-box">
-                                        <span class="data-label">Tipo Voto</span>
-                                        <span class="data-value">${h.tipo_voto}</span>
-                                    </div>
+                                    <div class="data-box"><span class="data-label">Cédula</span><span class="data-value">${h.cedula}</span></div>
+                                    <div class="data-box"><span class="data-label">Nombre Completo</span><span class="data-value">${h.nombre_completo}</span></div>
+                                    <div class="data-box"><span class="data-label">Nacionalidad / Sexo</span><span class="data-value">${h.nacionalidad} (${h.sexo})</span></div>
+                                    <div class="data-box"><span class="data-label">Fecha Nacimiento</span><span class="data-value">${h.fec_nac || 'N/A'}</span></div>
+                                    <div class="data-box"><span class="data-label">Departamento</span><span class="data-value">${h.departamento}</span></div>
+                                    <div class="data-box"><span class="data-label">Distrito</span><span class="data-value">${h.distrito}</span></div>
+                                    <div class="data-box"><span class="data-label">Zona / Local</span><span class="data-value">${h.local}</span></div>
+                                    <div class="data-box"><span class="data-label">Tipo Voto</span><span class="data-value">${h.tipo_voto}</span></div>
                                 </div>
 
                                 <div class="highlight-container">
                                     <div class="highlight-card">
-                                        <span class="data-label">MESA DE VOTACIÓN</span>
+                                        <span class="data-label">MESA</span>
                                         <div class="data-value">${h.mesa}</div>
                                     </div>
                                     <div class="highlight-card">
-                                        <span class="data-label">Nº DE ORDEN</span>
+                                        <span class="data-label">ORDEN</span>
                                         <div class="data-value">${h.orden}</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
-                    resultsContainer.innerHTML += htmlHabilitado;
                 }
 
-                // Render Histórico / Inhabilitados
                 if (data.historico && data.historico.length > 0) {
                     let filasTabla = data.historico.map(i => `
                         <tr>
@@ -627,10 +476,10 @@
                         </tr>
                     `).join('');
 
-                    const htmlHistorico = `
+                    resultsContainer.innerHTML += `
                         <div class="result-card-3d">
                             <div class="card-header-3d warning">
-                                <i class="fa-solid fa-clock-rotate-left"></i> REGISTRO HISTÓRICO DE INSCRIPCIONES NO HABILITADAS
+                                <i class="fa-solid fa-clock-rotate-left"></i> REGISTROS HISTÓRICOS
                             </div>
                             <div class="card-body-3d">
                                 <div class="table-container">
@@ -638,27 +487,24 @@
                                         <thead>
                                             <tr>
                                                 <th>Motivo / Detalle</th>
-                                                <th>Fecha Inscr.</th>
+                                                <th>Fecha</th>
                                                 <th>Distrito</th>
                                                 <th>Local</th>
                                                 <th>Tipo</th>
                                                 <th>Comprobante</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            ${filasTabla}
-                                        </tbody>
+                                        <tbody>${filasTabla}</tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     `;
-                    resultsContainer.innerHTML += htmlHistorico;
                 }
 
             } catch (err) {
                 loader.style.display = 'none';
-                alertError.textContent = 'Error al intentar conectar con el servidor.';
+                alertError.textContent = err.message || 'Error al conectar con la API.';
                 alertError.style.display = 'block';
             }
         }
