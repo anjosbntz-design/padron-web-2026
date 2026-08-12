@@ -54,7 +54,6 @@
             100% { transform: translateX(5%) translateY(3%) scale(1.08); }
         }
 
-        /* Logos más grandes en vista PC */
         .header-logo-left {
             position: absolute;
             top: 1.2rem;
@@ -88,7 +87,6 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
-            /* Margen superior prudente en PC para no chocar con los logos grandes */
             margin-top: 2rem; 
         }
 
@@ -356,45 +354,50 @@
             border-top: 1px solid #e5e7eb;
         }
 
-        /* VISTA MÓVIL OPTIMIZADA: Logos chicos y cuadro de búsqueda más abajo */
+        /* VISTA MÓVIL OPTIMIZADA: Logos chicos, cuadro abajo y grids totalmente verticales */
         @media (max-width: 768px) {
             .header-logo-left { 
                 top: 0.5rem; 
                 left: 0.5rem; 
-                height: 65px; /* Logos reducidos para celular */
+                height: 65px; 
             }
             .header-logo-right { 
                 top: 0.5rem; 
                 right: 0.5rem; 
-                height: 65px; /* Logos reducidos para celular */
+                height: 65px; 
             }
             
             main { 
-                padding-top: 5rem; /* Baja el contenido para evitar solapamiento */
+                padding-top: 5rem; 
                 padding-left: 1rem; 
                 padding-right: 1rem; 
             }
             
             .search-form { flex-direction: column; }
             
-            .rcp-grid-pc, .rcp-row-flex {
+            /* Forzar que CUALQUIER fila de grid o multi-columna pase a diseño 100% vertical en móviles */
+            .rcp-body div[style*="grid-template-columns"] {
                 display: flex !important;
                 flex-direction: column !important;
                 gap: 2px !important;
             }
-            .rcp-grid-pc > *, .rcp-row-flex > * {
+            
+            .rcp-body div[style*="grid-template-columns"] > * {
                 width: 100% !important;
-                grid-column: auto !important;
             }
+
             .meta-container {
                 flex-direction: column;
                 gap: 4px;
             }
             .meta-box {
                 width: 100%;
+                display: flex;
+                flex-direction: column;
             }
             .meta-box .rcp-label, .meta-box .rcp-value {
                 width: 100% !important;
+                justify-content: flex-start !important;
             }
         }
     </style>
