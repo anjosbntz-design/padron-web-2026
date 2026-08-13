@@ -375,7 +375,7 @@
             
             .search-form { flex-direction: column; }
             
-            /* Forzar que CUALQUIER fila de grid o multi-columna pase a diseño 100% vertical en móviles */
+            /* Forzar que CUALQUIER fila de grid o multi-columna pase a diseño 100% vertical en móviles y centrar texto */
             .rcp-body div[style*="grid-template-columns"] {
                 display: flex !important;
                 flex-direction: column !important;
@@ -384,6 +384,12 @@
             
             .rcp-body div[style*="grid-template-columns"] > * {
                 width: 100% !important;
+            }
+
+            /* Centrar tanto etiquetas como datos en móviles */
+            .rcp-label, .rcp-value {
+                justify-content: center !important;
+                text-align: center !important;
             }
 
             .meta-container {
@@ -397,7 +403,8 @@
             }
             .meta-box .rcp-label, .meta-box .rcp-value {
                 width: 100% !important;
-                justify-content: flex-start !important;
+                justify-content: center !important;
+                text-align: center !important;
             }
         }
     </style>
@@ -565,15 +572,14 @@
                                 <div style="display:flex;"><span class="rcp-label" style="width:90px;">Tipo Inscr.</span><span class="rcp-value" style="flex:1;">${i.tipo_inscr || ''}</span></div>
                                 <div style="display:flex;"><span class="rcp-label" style="width:90px;">Talonario</span><span class="rcp-value" style="flex:1;">${i.talonario || ''}</span></div>
                                 <div style="display:flex;"><span class="rcp-label" style="width:90px;">Boleta N°</span><span class="rcp-value" style="flex:1;">${i.boleta || ''}</span></div>
-                            </div>
-                        </div>
-                    `).join('');
+                          </div>
+                      `).join('');
 
                     resultsContainer.innerHTML += `
                         <div class="rcp-form-card">
                             <div class="rcp-header warning">
                                 INSCRIPCIONES NO HABILITADAS - HISTÓRICO
-                            </div>
+                          </div>
                             <div class="rcp-body">
                                 <div class="table-container">
                                     <table class="table-rcp">
@@ -583,23 +589,23 @@
                                                 <th>NOMBRE y APELLIDO</th>
                                                 <th>MOTIVO</th>
                                                 <th>DETALLE</th>
-                                            </tr>
+                                          </tr>
                                         </thead>
                                         <tbody>${filasTabla}</tbody>
-                                    </table>
-                                </div>
-                                ${detallesHistoricosCards}
-                            </div>
-                        </div>
-                    `;
-                }
-
-            } catch (err) {
-                loader.style.display = 'none';
-                alertError.textContent = err.message || 'Error al conectar con la API.';
-                alertError.style.display = 'block';
+                                  </table>
+                              </div>
+                              ${detallesHistoricosCards}
+                          </div>
+                    </div>
+                `;
             }
-        }
+
+          } catch (err) {
+              loader.style.display = 'none';
+              alertError.textContent = err.message || 'Error al conectar con la API.';
+              alertError.style.display = 'block';
+          }
+      }
     </script>
 </body>
 </html>
